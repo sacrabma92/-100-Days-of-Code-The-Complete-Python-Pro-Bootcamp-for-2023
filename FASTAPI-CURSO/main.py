@@ -24,3 +24,7 @@ def read_item(id: int, q: Union[str, None] = None):
 @app.get('/suma')
 def suma(num1: float, num2: float):
   return {"suma": num1 + num2}
+
+@app.put('/items/{item_id}')
+def uptate_item(item_id: int, item: Item):
+  return {"item_name":item.name, "item_id": item_id, "item_price":item.price}
