@@ -1,5 +1,7 @@
 from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, Body
+from pydantic import BaseModel
+from typing import Optional, List
 
 #Crear una instancia de FastAPI
 app = FastAPI()
@@ -12,6 +14,14 @@ ventas = [
     {'id': 2, 'nombre': 'Mouse', 'fecha': '06/02/2024', "tienda": 'TIENDA02', 'precio': 10},
     {'id': 3, 'nombre': 'Teclado', 'fecha': '11/03/2024', "tienda": 'TIENDA03', 'precio': 20},
 ]
+
+# Creacion de Modelo
+class Ventas(BaseModel):
+    id: Optional[int] = None
+    nombre: str
+    fecha: str
+    tienda: str
+    precio: float
 
 # Crear punto de entreda
 @app.get("/", tags=['Inicio'])  #Cavmio de etiqueta en Documentacion
@@ -39,30 +49,18 @@ def producto(nombre: str):
 
 #Agregamos una nueva venta con el metodo POST y por medio de Body() toca importarla
 @app.post('/ventas', tags=['Ventas'])
-def agregar_venta(
-    id: int = Body(),
-    nombre: str = Body(),
-    fecha: str = Body(),
-    tienda: str = Body(),
-    precio: float = Body(),
-):
-  ventas.append({'id': id, 'nombre': nombre, 'fecha': fecha, 'tienda': tienda, 'precio': precio})
+def agregar_venta(venta: Ventas):
+  ventas.append(venta)
   return {'mensaje': 'Venta agregada correctamente'}
     
 @app.put('/ventas/{id}', tags=['Ventas'])
-def actualizar_venta(
-    id: int, 
-    nombre: str = Body(), 
-    fecha: str = Body(), 
-    tienda: str = Body(), 
-    precio: float = Body()
-    ):
+def actualizar_venta(id: int, venta: Ventas):
     for element in ventas:
         if element['id'] == id:
-            element['nombre'] = nombre
-            element['fecha'] = fecha
-            element['tienda'] = tienda
-            element['precio'] = precio
+            element['nombre'] = venta.nombre
+            element['fecha'] = venta.fecha
+            element['tienda'] = venta.tienda
+            element['precio'] = venta.precio
             return {'mensaje': 'Venta actualizada'}
     return {'mensaje': 'Venta no encontrada'}
 
