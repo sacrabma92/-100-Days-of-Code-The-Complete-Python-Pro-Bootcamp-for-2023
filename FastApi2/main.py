@@ -66,7 +66,13 @@ def actualizar_venta(
             return {'mensaje': 'Venta actualizada'}
     return {'mensaje': 'Venta no encontrada'}
 
-
+@app.delete('/ventas/{id}', tags=['Ventas'])
+def delete_venta(id: int):
+    for venta in ventas:
+        if venta['id'] == id:
+            ventas.remove(venta)
+            return {'mensaje': 'Venta eliminada'}
+    return {'mensaje': 'Venta no encontrada'}
 
 
 
